@@ -1,0 +1,243 @@
+/* 
+    FireFox reStock Theme
+
+    Smaller Tabs and cool animations with the stock Firefox design in mind
+    Focussed on just showing what you need, when you need it.
+    
+    
+    Features:
+    Fast and small
+
+    Way smaller Tabs
+    Clean navigation bar and url
+    Reactive design
+
+    Lots of smooth transitions
+*/
+
+/* 
+TIPS:
+
+edit "browser.tab.tabClipWidth" in about:config to change te time when the X icon disappears
+
+*/
+
+
+
+
+
+:root {
+    --my-tab-min-width: 28px; /* Set minimum width for tabs */
+    --toolbarbutton-border-radius: 10px !important; /* round borders of icons and stuf */
+}
+
+/* ------------------------------------------------
+                   MENUS
+-------------------------------------------------- */
+
+menuseparator, toolbarseparator { /* Separators in Menus */
+    height: 0px !important;
+}
+
+/* Items in all menus */
+.subviewbutton-nav,
+.menu-iconic,
+.menuitem-iconic, .subviewbutton,
+.protections-popup-category, .protections-popup-footer-button,
+.identity-popup-expander, #identity-popup-clear-sitedata-button, #identity-popup-more-info {
+    background-color: none !important;
+    border-radius: var(--toolbarbutton-border-radius) !important;
+    
+    transition: background-color 0.35s;
+}
+.menu-iconic:hover,
+.menuitem-iconic:hover, .subviewbutton:hover, 
+.protections-popup-category:hover, .protections-popup-footer-button:hover,
+.identity-popup-expander:hover {
+    /* Hovering over menu items */
+}
+
+/* Footer Elements inside of menus */
+.panel-subview-footer,
+#identity-popup-clear-sitedata-button, #identity-popup-more-info,
+#protections-popup-cookiesView-settings-button {
+    margin: 0px !important;
+    border-radius: 0px !important;
+    border: none !important;
+}
+
+
+.panel-arrow {
+    display: none !important;
+}
+
+.panel-banner-item { /* Update Panel in main menu */
+    background: none !important;
+}
+
+#appMenu-zoomReset-button { /* Zoom button in main menu */
+    border: none !important;
+}
+
+panelview {
+    /* Background of most menus */
+}
+
+
+
+
+/* ------------------------------------------------
+                    NAV BAR
+-------------------------------------------------- */
+
+@keyframes rotate90 { /* Animation for 90 degree rotation */
+    from { transform: rotate(0deg); }
+    to   { transform: rotate(90deg); }
+}
+
+
+/* smooth transitions when hovering over icons */
+.toolbarbutton-icon, .toolbarbutton-badge-stack {
+    transition: background-color 0.3s !important;
+}
+
+
+/* Rotate the Custom Menu expander by 90 degrees */
+#nav-bar-overflow-button .toolbarbutton-icon {
+    transform: rotate(90deg);
+}
+
+/* rotate the new tab button 90 degrees on click */
+#new-tab-button:active {
+    transform: translateY(0em); /* Dont move down */
+    animation: rotate90 0.15s ease-out !important;
+}
+
+/* Buttons on Navbar move on click */
+.toolbarbutton-1:active {
+    transform: translateY(0.15em);
+}
+
+
+
+/* Making the Adress bar more simplistic */
+
+#urlbar-input { /* Text field of the urlbar */
+    font-size: 105%;
+}
+#urlbar-input-container, .searchbar-textbox { /* Container for the non-expanded urlbar */
+    background: white; /* removes the border */
+    margin: 0px 0px 7px 0px; /* Moves seperator line down when expanded */
+    box-shadow: 0px 0px 10px #D0D0D0;
+    border-radius: 5px !important; /* dont let --toolbarbutton-border-radius affect urlbar */
+}
+
+
+/* Icons in the Adress bar only show when hovering */
+
+.urlbar-icon { /* Icons on the right side of the urlbar */
+    opacity: 0; /* initial state: invisible */
+    margin: -16px !important; /* Make the separator line move off screen. 16px works for compact and normal mode */
+    
+    transition: opacity 0.3s, margin 0.5s !important;
+} #urlbar-input-container:hover .urlbar-icon { /* When hovering over urlbar */
+    opacity: 1;
+    margin: 0.5px !important;
+}
+#urlbar-zoom-button { /* Zoom Indicator */
+    border: none !important; /* Flat design */
+}
+
+#tracking-protection-icon-box {} /* Box around the tracking protection icon */
+#tracking-protection-container {} /* List with detailed tracking info */
+
+
+/* ------------------------------------------------
+                    TABS
+-------------------------------------------------- */
+
+.titlebar-spacer { /* Reduce Space right/left from tab stack */
+    width: 1.5em !important;
+}
+
+
+/* rule for reducing minimum tab width */
+.tabbrowser-tab:not([pinned]){
+    min-width: var(--my-tab-min-width) !important;
+}
+
+.tabbrowser-tab:not([pinned]) .tab-icon-image { /* Tab icons */
+    margin: 0px 2px 0px -1px !important;
+    /* width: 15px !important; */
+    
+    transition: width 0.5s, height 0.5s !important;
+}
+
+.tabbrowser-tab:not([pinned]) .tab-content{ /* Tab content */
+    padding: 5px !important;
+}
+
+
+.tabbrowser-tab .tab-background { /* Tab Background of non-selected */
+    margin: 3px 0px 3px 0px !important; /* Tweaked to make background align */
+    padding: 0px !important;
+    
+    opacity: 0;
+
+    /* Similar settings to selected */
+    border-radius: 4px;
+    background-color: white !important;
+    box-shadow: 0px 0px 5px black;
+
+    /* Smoooth transitions between selected/not */
+    transition: opacity 0.5s, margin 0.3s !important;
+} .tabbrowser-tab:hover .tab-background {
+    opacity: 0.5;
+}
+
+.tabbrowser-tab .tab-background[selected="true"] { /* Background of selected tab*/
+    margin: 2px -10px !important; /* selected tabs expand */
+
+    opacity: 1;
+
+    box-shadow: 0px 0px 10px rgb(65, 65, 65);
+}
+
+
+/* Make Close Tab button appear on hover */
+.tabbrowser-tab .tab-close-button:not([selected]) { /* Tab close on non-selected Tabs */
+    margin: -3px !important;
+}
+.tabbrowser-tab .tab-close-button { /* Tab close button */
+    margin: 0px -10px 0px 0px !important; /* Button appears more towards right */
+    opacity: 0; /* Initial parameters (is invisible) */
+    width: 0px;
+    
+    transition: opacity 0.5s, width 0.5s !important;
+} .tabbrowser-tab:hover .tab-close-button { 
+    width: 19px; /* Button appears when howering */
+    opacity: 1;
+}
+
+/* Selected tabs dont have Icons */
+.tabbrowser-tab:not([pinned]) .tab-icon-image[selected="true"] {
+    width: 0px !important; 
+    height: 0px !important;
+    
+    margin: 0px -2px !important; /* Text begins earlier */
+}
+
+/* Pinned tabs dont expand */
+.tabbrowser-tab[pinned = "true"] .tab-background[selected="true"] { /* Background of pinned and selected tab */
+    margin: 3px 3px !important; 
+}.tabbrowser-tab[pinned = "true"] .tab-background:not([selected]) { /* Fix displacement of background */
+    margin: 3px 1px !important; 
+}
+
+/* Shorten vertical tab separator lines top and bottom, further decrease tab width*/
+.tabbrowser-tab::before, .tabbrowser-tab::after {
+    margin: 9px 0px !important;
+    visibility: visible !important;
+}
+
+.tab-line { display: none; } /* Remove blue top line */
