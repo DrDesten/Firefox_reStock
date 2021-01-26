@@ -9,6 +9,7 @@ If not already, rename file to 'userChrome.css'
 
 ## Known Issues
 The theme can cause problems when using it with dark mode.
+On linux systems, items in the search bar may not unhide.
 
 
 ## Features
