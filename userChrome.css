@@ -18,7 +18,7 @@
 /* 
 TIPS:
 
-edit "browser.tab.tabClipWidth" in about:config to change te time when the X icon disappears
+edit "browser.tab.tabClipWidth" in about:config to change the time when the close ("x") icon disappears
 
 */
 
@@ -28,7 +28,8 @@ edit "browser.tab.tabClipWidth" in about:config to change te time when the X ico
 
 :root {
     --my-tab-min-width: 28px; /* Set minimum width for tabs */
-    --toolbarbutton-border-radius: 10px !important; /* round borders of icons and stuf */
+    --toolbarbutton-border-radius: 3px !important; /* border of icons and stuff */
+    --tab-border-radius: 3px !important; /* border of tabs */
 }
 
 /* ------------------------------------------------
@@ -47,6 +48,7 @@ menuseparator, toolbarseparator { /* Separators in Menus */
 .identity-popup-expander, #identity-popup-clear-sitedata-button, #identity-popup-more-info {
     background-color: none !important;
     border-radius: var(--toolbarbutton-border-radius) !important;
+    padding: 0px 2px;
     
     transition: background-color 0.35s;
 }
@@ -128,8 +130,12 @@ panelview {
 #urlbar-input-container, .searchbar-textbox { /* Container for the non-expanded urlbar */
     background: white; /* removes the border */
     margin: 0px 0px 7px 0px; /* Moves seperator line down when expanded */
-    box-shadow: 0px 0px 10px #D0D0D0;
+    box-shadow: 0px 0px 5px #D0D0D0;
     border-radius: 5px !important; /* dont let --toolbarbutton-border-radius affect urlbar */
+    transition: box-shadow 0.2s;
+}
+.searchbar-textbox:hover { /* Container for the non-expanded urlbar */
+    box-shadow: 0px 0px 10px #bbbbbb;
 }
 
 
@@ -160,7 +166,6 @@ panelview {
     width: 1.5em !important;
 }
 
-
 /* rule for reducing minimum tab width */
 .tabbrowser-tab:not([pinned]){
     min-width: var(--my-tab-min-width) !important;
@@ -185,12 +190,12 @@ panelview {
     opacity: 0;
 
     /* Similar settings to selected */
-    border-radius: 4px;
+    border-radius: var(--tab-border-radius);
     background-color: white !important;
     box-shadow: 0px 0px 5px black;
 
     /* Smoooth transitions between selected/not */
-    transition: opacity 0.5s, margin 0.3s !important;
+    transition: opacity 0.5s, margin 0.3s, width 0.2s !important;
 } .tabbrowser-tab:hover .tab-background {
     opacity: 0.5;
 }
@@ -201,6 +206,9 @@ panelview {
     opacity: 1;
 
     box-shadow: 0px 0px 10px rgb(65, 65, 65);
+}
+.tabbrowser-tab:not([pinned]) .tab-background[selected="true"] { /* Background of selected tab*/
+    min-width: calc(var(--my-tab-min-width) * 2) !important;
 }
 
 
