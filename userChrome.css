@@ -4,22 +4,11 @@
     Smaller Tabs and cool animations with the stock Firefox design in mind
     Focussed on just showing what you need, when you need it.
     
-    
     Features:
-    Fast and small
 
     Way smaller Tabs
-    Clean navigation bar and url
-    Reactive design
-
-    Lots of smooth transitions
-*/
-
-/* 
-TIPS:
-
-edit "browser.tab.tabClipWidth" in about:config to change the time when the close ("x") icon disappears
-
+    Clean navigation bar
+    smooth transitions
 */
 
 
@@ -28,15 +17,149 @@ edit "browser.tab.tabClipWidth" in about:config to change the time when the clos
 
 :root {
     /* Set Widths */
-    --tab-mw: 22px;
+    --tab-mw: 18px;
     --tab-pinned-w: 35px;
     /* border of icons and stuff */
     --toolbarbutton-border-radius: 3px !important;
     
     --bezier-exp-in: cubic-bezier(1,0,1,0);
-    --bezier-exp-in-soft: cubic-bezier(1,0,.9,.9)
+    --bezier-exp-in-soft: cubic-bezier(1,0,.9,.9);
     --bezier-exp-out: cubic-bezier(0,1,0,1);
     --bezier-exp-out-soft: cubic-bezier(.1,.1,0,1);
+}
+
+
+/* ------------------------------------------------
+                    TABS
+-------------------------------------------------- */
+
+/* Allow for container queries */
+.tabbrowser-tab:not([pinned]) {
+    container-type: inline-size;
+}
+
+/* Reduce Space right/left from tab stack */
+.titlebar-spacer {
+    width: 1.5em !important;
+}
+
+/* Reduce Minimum Tab Width */
+.tabbrowser-tab:not([pinned]) {
+    min-width: var(--tab-mw) !important;
+}
+/* .tabbrowser-tab[pinned] {
+    width: var(--tab-pinned-w) !important;
+} */
+.tabbrowser-tab[selected]:not([pinned]) {
+    /* min-width: calc(var(--tab-mw) * 3) !important; */
+}
+
+/* Reduce Tab Gap */
+.tabbrowser-tab:not([pinned]) {
+    padding: 0px !important;
+}
+.tabbrowser-tab:not([pinned])[selected] {
+    z-index: 1;
+}
+
+/* Tab Background */
+.tabbrowser-tab .tab-background {
+    margin: 3px 0px 3px 0px !important;
+    padding: 0px !important;
+
+    background-color: rgba(255, 255, 255, 0) !important;
+    box-shadow: 0px 0px 0px gray;
+
+    transition: background-color 0.2s, box-shadow 0.2s, margin 0.2s, width 0.2s !important;
+}
+
+/* Tab Background of selected or active */
+.tabbrowser-tab:hover .tab-background,
+.tabbrowser-tab[selected] .tab-background {
+    background-color: rgba(255, 255, 255, 1) !important;
+    box-shadow: 0px 0px 5px lightgray;
+}
+
+/* Tab Close Button */
+.tabbrowser-tab .tab-close-button {
+    display: block;
+    
+    /* Resize and change position */
+    width: 0px !important;
+    min-width: 0px; 
+    height: auto !important;
+    padding: 0px !important;
+    margin: auto !important;
+    
+    /* Swirl in on hover */
+    transform: rotate(-90deg);
+    transition: 
+        transform 0.3s var(--bezier-exp-out-soft), 
+        width 0.3s var(--bezier-exp-out-soft), 
+        padding 0.3s var(--bezier-exp-out-soft);
+}
+.tabbrowser-tab:hover .tab-close-button {
+    width: 22px !important;
+    padding: 4.5px !important;
+    transform: rotate(0);
+}
+/* Prevent Tab close icon from becoming too small in some situations */
+.tabbrowser-tab .tab-icon-stack {
+    min-width: 0px; 
+}
+
+/* Prevent Text disappearing from Tabs with no favicon when they get small */
+.tabbrowser-tab:not(:has(.tab-icon-stack > *[src])) .tab-content {
+    padding: 0px calc(min(max(15%, 2px), 8px)) !important;
+}
+
+/* Tabs too small to fit text */
+@container (max-width: 45px) {
+    /* Has favicon */
+    .tabbrowser-tab:has(.tab-icon-stack > *[src]) .tab-content {
+        padding: 0px !important;
+    }
+    .tabbrowser-tab:has(.tab-icon-stack > *[src]) .tab-label-container {
+        display: none;
+    }
+    .tabbrowser-tab:has(.tab-icon-stack > *[src]) .tab-icon-stack {
+        flex-grow: 1;
+    }
+    .tabbrowser-tab:has(.tab-icon-stack > *[src]) .tab-icon-stack > * {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+    }
+    
+    /* Doesn't have favicon */
+    .tabbrowser-tab:not(:has(.tab-icon-stack > *[src])) .tab-icon-stack {
+        display: none;
+    }
+}
+
+/* Tabs too small to fit more than one icon */
+@container (max-width: 50px) {
+    /* Close Button is visible */
+    .tabbrowser-tab[selected]:hover .tab-icon-stack,
+    .tabbrowser-tab[selected]:hover .tab-label-container {
+        display: none;
+    }
+    .tabbrowser-tab[selected]:hover .tab-content {
+        padding: 0px !important;
+    }
+    
+    /* Close button is not visible */
+    .tabbrowser-tab:not([selected]) .tab-close-button {
+        display: none;   
+    }
+    .tabbrowser-tab .tab-close-button {
+        transition: none;   
+    }
+    /* Compensate the size change of the close button to keep the cross the same size */
+    .tabbrowser-tab:hover .tab-close-button {
+        padding: calc(min(4.5px - (22px - 100%) / 2, 4.5px)) !important;
+    }
 }
 
 /* ------------------------------------------------
@@ -111,17 +234,10 @@ panelview {
                     NAV BAR
 -------------------------------------------------- */
 
-@keyframes rotate90 {
-
-    /* Animation for 90 degree rotation */
-    from {
-        transform: rotate(0deg);
-    }
-
-    to {
-        transform: rotate(90deg);
-    }
-}
+/* 
+#nav-bar                - Nav Bar
+#nav-bar toolbarbutton  - Nav Bar Buttons
+*/
 
 
 /* smooth transitions when hovering over icons */
@@ -130,17 +246,9 @@ panelview {
     transition: background-color 0.3s !important;
 }
 
-
 /* Rotate the Custom Menu expander by 90 degrees */
 #nav-bar-overflow-button .toolbarbutton-icon {
     transform: rotate(90deg);
-}
-
-/* rotate the new tab button 90 degrees on click */
-#new-tab-button:active {
-    transform: translateY(0em);
-    /* Dont move down */
-    animation: rotate90 0.15s ease-out !important;
 }
 
 /* Buttons on Navbar move on click */
@@ -149,194 +257,41 @@ panelview {
 }
 
 
+/* ------------------------------------------------
+                    URL BAR
+-------------------------------------------------- */
 
-/* Making the Adress bar more simplistic */
-
-#urlbar-background {
-    /* Expanded urlbar */
-    margin: 0px 5px;
-    border: none !important;
-    border-radius: 5px !important;
-    /* dont let --toolbarbutton-border-radius affect urlbar */
-
-    transition: height 0.2s;
-}
-
-#urlbar-input {
-    /* Text field of the urlbar */
-    font-size: 105%;
-}
-
-#urlbar-input-container,
-.searchbar-textbox {
-    /* Container for the non-expanded urlbar */
-    background: white;
-    /* removes the border */
-    margin: 0px 0px 7px 0px;
-    /* Moves seperator line down when expanded */
-    box-shadow: 0px 0px 5px #D0D0D0;
-    border-radius: 5px !important;
-    /* dont let --toolbarbutton-border-radius affect urlbar */
-    transition: box-shadow 0.2s;
-}
-
-.searchbar-textbox:hover {
-    /* Container for the non-expanded urlbar */
-    box-shadow: 0px 0px 10px #bbbbbb;
-}
-
+/* 
+#urlbar                 - URL Bar including popup
+#urlbar-input-container - URL Bar
+*/
 
 /* Icons in the Adress bar only show when hovering */
-
-.urlbar-icon {
-    /* Icons on the right side of the urlbar */
-    margin: -18px !important;
-    /* Make the separator line move off screen. 16px works for compact and normal mode */
+#page-action-buttons > hbox {
+    transition: 
+        opacity 0.5s, 
+        width 0.5s, 
+        padding-left 0.5s, 
+        padding-right 0.5s 
+        !important;
+}
+#urlbar-input-container:not(:hover) #page-action-buttons > hbox {
     opacity: 0;
-    /* initial state: invisible */
-
-    transition: opacity 0.3s, margin 0.5s !important;
+    width: 0px !important;
+    padding-left: 0px !important;
+    padding-right: 0px !important;
+}
+#page-action-buttons > hbox > .urlbar-icon {
+    transform: rotate(45deg);
+    transition: transform 0.5s !important;
+}
+#urlbar-input-container:hover #page-action-buttons > hbox > .urlbar-icon {
+    transform: rotate(0);
 }
 
-#urlbar-input-container:hover .urlbar-icon {
-    /* When hovering over urlbar */
-    opacity: 1;
-    margin: 0.5px !important;
-}
-
-#urlbar-zoom-button {
-    /* Zoom Indicator */
-    border: none !important;
-    /* Flat design */
-}
 
 /* Box around the tracking protection icon */
 #tracking-protection-icon-box {}
 
 /* List with detailed tracking info */
 #tracking-protection-container {}
-
-
-/* ------------------------------------------------
-                    TABS
--------------------------------------------------- */
-
-/* Allow for container queries */
-.tabbrowser-tab:not([pinned]) {
-    container-type: inline-size;
-}
-
-/* Reduce Space right/left from tab stack */
-.titlebar-spacer {
-    width: 1.5em !important;
-}
-/* Reduce padding in scrollbox */
-/* .scrollbox-clip > scrollbox:nth-child(1) {
-    padding: 0px !important;
-} */
-
-/* Reduce Minimum Tab Width */
-.tabbrowser-tab:not([pinned]) {
-    min-width: var(--tab-mw) !important;
-}
-/* .tabbrowser-tab[pinned] {
-    width: var(--tab-pinned-w) !important;
-} */
-.tabbrowser-tab[selected]:not([pinned]) {
-    /* min-width: calc(var(--tab-mw) * 3) !important; */
-}
-
-/* Reduce Tab Gap */
-.tabbrowser-tab:not([pinned]) {
-    margin: 0px !important;
-    padding: 0px !important;
-    transition: margin 0.2s !important;
-}
-.tabbrowser-tab[selected]:not([pinned]) {
-    margin: 0px 2px !important;
-}
-
-/* Tab Background */
-.tabbrowser-tab .tab-background {
-    margin: 3px 0px 3px 0px !important;
-    padding: 0px !important;
-
-    background-color: rgba(255, 255, 255, 0) !important;
-    box-shadow: 0px 0px 0px gray;
-
-    transition: background-color 0.2s, box-shadow 0.2s, margin 0.2s, width 0.2s !important;
-}
-
-/* Tab Background of selected or active */
-.tabbrowser-tab:hover .tab-background,
-.tabbrowser-tab .tab-background[selected] {
-    background-color: rgba(255, 255, 255, 1) !important;
-    box-shadow: 0px 0px 5px lightgray;
-}
-
-/* Tab Close Button */
-.tabbrowser-tab .tab-close-button {
-    display: block;
-    
-    /* Resize and change position */
-    width: 0px !important;
-    min-width: 0px; 
-    height: auto !important;
-    padding: 0px !important;
-    margin: auto !important;
-    
-    /* Swirl in on hover */
-    transform: rotate(-90deg);
-    transition: 
-        transform 0.3s var(--bezier-exp-out-soft), 
-        width 0.3s var(--bezier-exp-out-soft), 
-        padding 0.3s var(--bezier-exp-out-soft);
-}
-.tabbrowser-tab:hover .tab-close-button {
-    width: 22px !important;
-    padding: 5px !important;
-    transform: rotate(0);
-}
-/* Prevent Tab close icon from becoming too small in some situations */
-.tabbrowser-tab .tab-icon-stack {
-    min-width: 0px; 
-}
-
-/* Tabs too small to fit text */
-@container (max-width: 45px) {
-    /* Has favicon */
-    .tabbrowser-tab:has(.tab-icon-stack > *[src]) .tab-content {
-        padding: 0px !important;
-    }
-    .tabbrowser-tab:has(.tab-icon-stack > *[src]) .tab-label-container {
-        display: none;
-    }
-    .tabbrowser-tab:has(.tab-icon-stack > *[src]) .tab-icon-stack {
-        flex-grow: 1;
-    }
-    .tabbrowser-tab:has(.tab-icon-stack > *[src]) .tab-icon-stack > * {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-    }
-    
-    /* Doesn't have favicon */
-    .tabbrowser-tab:not(:has(.tab-icon-stack > *[src])) .tab-icon-stack {
-        display: none;
-    }
-}
-
-/* Tabs too small to fit more than one icon */
-@container (max-width: 50px) {
-    .tabbrowser-tab[selected]:hover .tab-icon-stack,
-    .tabbrowser-tab[selected]:hover .tab-label-container {
-        display: none;
-    }
-    .tabbrowser-tab:not([selected]) .tab-close-button {
-        display: none;   
-    }
-    .tabbrowser-tab .tab-close-button {
-        transition: none;   
-    }
-}
