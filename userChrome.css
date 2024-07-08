@@ -16,16 +16,18 @@
 
 
 :root {
-    /* Set Widths */
-    --tab-mw: 18px;
+    /* Set Widths (Favicon width is 16px) */
+    --tab-mw: 17px;
     --tab-pinned-w: 35px;
-    /* border of icons and stuff */
-    --toolbarbutton-border-radius: 3px !important;
     
+    /* Interpolation Functions */
     --bezier-exp-in: cubic-bezier(1,0,1,0);
     --bezier-exp-in-soft: cubic-bezier(1,0,.9,.9);
     --bezier-exp-out: cubic-bezier(0,1,0,1);
     --bezier-exp-out-soft: cubic-bezier(.1,.1,0,1);
+    
+    /* Colors */
+    --tab-bg: var(--tab-selected-bgcolor);
 }
 
 
@@ -34,8 +36,11 @@
 -------------------------------------------------- */
 
 /* Allow for container queries */
-.tabbrowser-tab:not([pinned]) {
-    container-type: inline-size;
+.tabbrowser-tab:not([pinned]):has(.tab-icon-stack > *[src]) {
+    container: tab-favicon / inline-size;
+}
+.tabbrowser-tab:not([pinned]):not(:has(.tab-icon-stack > *[src])) {
+    container: tab-text / inline-size;
 }
 
 /* Reduce Space right/left from tab stack */
@@ -51,7 +56,7 @@
     width: var(--tab-pinned-w) !important;
 } */
 .tabbrowser-tab[selected]:not([pinned]) {
-    /* min-width: calc(var(--tab-mw) * 3) !important; */
+    /* min-width: 48px !important; */
 }
 
 /* Reduce Tab Gap */
@@ -64,20 +69,22 @@
 
 /* Tab Background */
 .tabbrowser-tab .tab-background {
-    margin: 3px 0px 3px 0px !important;
+    margin: 3px 0px !important;
     padding: 0px !important;
+    
+    background-color: var(--tab-bg) !important;
+    box-shadow: 0px 0px 4px light-dark(#888, #000) !important;
+    opacity: 0;
 
-    background-color: rgba(255, 255, 255, 0) !important;
-    box-shadow: 0px 0px 0px gray;
-
-    transition: background-color 0.2s, box-shadow 0.2s, margin 0.2s, width 0.2s !important;
+    transition: opacity 0.2s, box-shadow 0.2s, margin 0.2s !important;
 }
 
-/* Tab Background of selected or active */
-.tabbrowser-tab:hover .tab-background,
+/* Tab Background of selected and active */
+.tabbrowser-tab:hover .tab-background { 
+    opacity: 0.8;
+}
 .tabbrowser-tab[selected] .tab-background {
-    background-color: rgba(255, 255, 255, 1) !important;
-    box-shadow: 0px 0px 5px lightgray;
+    opacity: 1;
 }
 
 /* Tab Close Button */
@@ -110,30 +117,31 @@
 
 /* Prevent Text disappearing from Tabs with no favicon when they get small */
 .tabbrowser-tab:not(:has(.tab-icon-stack > *[src])) .tab-content {
-    padding: 0px calc(min(max(15%, 2px), 8px)) !important;
+    padding: 0px calc(min(max(15% - 8px, 2px), 8px)) !important;
 }
 
 /* Tabs too small to fit text */
-@container (max-width: 45px) {
-    /* Has favicon */
-    .tabbrowser-tab:has(.tab-icon-stack > *[src]) .tab-content {
+/* Has favicon */
+@container tab-favicon (max-width: 45px) {
+    .tabbrowser-tab .tab-content {
         padding: 0px !important;
     }
-    .tabbrowser-tab:has(.tab-icon-stack > *[src]) .tab-label-container {
+    .tabbrowser-tab .tab-label-container {
         display: none;
     }
-    .tabbrowser-tab:has(.tab-icon-stack > *[src]) .tab-icon-stack {
+    .tabbrowser-tab .tab-icon-stack {
         flex-grow: 1;
     }
-    .tabbrowser-tab:has(.tab-icon-stack > *[src]) .tab-icon-stack > * {
+    .tabbrowser-tab .tab-icon-stack > * {
         position: absolute;
         top: 50%;
         left: 50%;
         transform: translate(-50%, -50%);
     }
-    
-    /* Doesn't have favicon */
-    .tabbrowser-tab:not(:has(.tab-icon-stack > *[src])) .tab-icon-stack {
+}
+/* Doesn't have favicon */
+@container tab-text (max-width: 45px) {
+    .tabbrowser-tab .tab-icon-stack {
         display: none;
     }
 }
@@ -156,79 +164,45 @@
     .tabbrowser-tab .tab-close-button {
         transition: none;   
     }
+    
     /* Compensate the size change of the close button to keep the cross the same size */
     .tabbrowser-tab:hover .tab-close-button {
         padding: calc(min(4.5px - (22px - 100%) / 2, 4.5px)) !important;
     }
 }
 
+
 /* ------------------------------------------------
                    MENUS
 -------------------------------------------------- */
 
-menuseparator,
-toolbarseparator {
-    /* Separators in Menus */
-    height: 0px !important;
+/* Make Update Banner less intrusive */
+.panel-viewstack toolbarbutton[id*=update] {
+    order: 1;
+    margin: 0px 8px !important;
+}
+.panel-viewstack toolbarbutton[id*=update]:not(:hover) {
+    background: none !important;
+}
+.panel-viewstack toolbarbutton[id*=update] image {
+    display: none;
 }
 
 /* Items in all menus */
-.subviewbutton-nav,
-.menu-iconic,
-.menuitem-iconic,
-.subviewbutton,
-.protections-popup-category,
-.protections-popup-footer-button,
-.identity-popup-expander,
-#identity-popup-clear-sitedata-button,
-#identity-popup-more-info {
-    background-color: none !important;
-    border-radius: var(--toolbarbutton-border-radius) !important;
-    padding: 0px 2px;
-
-    transition: background-color 0.35s;
+.panel-viewstack toolbarbutton {
+    transition: background-color 0.3s;
 }
 
-.menu-iconic:hover,
-.menuitem-iconic:hover,
-.subviewbutton:hover,
-.protections-popup-category:hover,
-.protections-popup-footer-button:hover,
-.identity-popup-expander:hover {
-    /* Hovering over menu items */
+#appMenu-zoom-controls toolbarbutton:not([id*=zoomReset]) > image {
+    transform: scale(1.125);
 }
 
-/* Footer Elements inside of menus */
-.panel-subview-footer,
-#identity-popup-clear-sitedata-button,
-#identity-popup-more-info,
-#protections-popup-cookiesView-settings-button {
-    margin: 0px !important;
-    border-radius: 0px !important;
-    border: none !important;
+.panel-viewstack toolbarbutton:not([shortcut])::after {
+    transition: transform 0.2s;
 }
-
-
-.panel-arrow {
-    display: none !important;
+.panel-viewstack toolbarbutton:not([shortcut]):hover::after {
+    transform: translate(20%, 0);
 }
-
-.panel-banner-item {
-    /* Update Panel in main menu */
-    background: none !important;
-}
-
-#appMenu-zoomReset-button {
-    /* Zoom button in main menu */
-    border: none !important;
-}
-
-panelview {
-    /* Background of most menus */
-}
-
-
-
 
 /* ------------------------------------------------
                     NAV BAR
@@ -237,14 +211,48 @@ panelview {
 /* 
 #nav-bar                - Nav Bar
 #nav-bar toolbarbutton  - Nav Bar Buttons
+
+var(--toolbarbutton-inner-padding)
 */
 
-
-/* smooth transitions when hovering over icons */
-.toolbarbutton-icon,
-.toolbarbutton-badge-stack {
-    transition: background-color 0.3s !important;
+#nav-bar toolbarbutton > * {
+    transition: background-color 0.3s;
 }
+
+/*#nav-bar toolbarbutton:not([disabled]) > image {
+    width: calc(1.5 * var(--toolbarbutton-inner-padding) + 16px) !important;
+    height: calc(1.5 * var(--toolbarbutton-inner-padding) + 16px) !important;
+    padding: calc(var(--toolbarbutton-inner-padding) * 0.75) !important;
+    margin: calc(var(--toolbarbutton-inner-padding) * 0.25) !important;
+    
+    transition: 
+        background-color 0.3s, 
+        width 0.3s,
+        height 0.3s,
+        padding 0.3s, 
+        margin 0.3s 
+        !important;
+}
+#nav-bar toolbarbutton:not([disabled]):hover > image {
+    width: calc(2 * var(--toolbarbutton-inner-padding) + 16px) !important;
+    height: calc(2 * var(--toolbarbutton-inner-padding) + 16px) !important;
+    padding: var(--toolbarbutton-inner-padding) !important;
+    margin: 0px !important;
+}
+#nav-bar toolbarbutton:not([disabled]) > stack {
+    padding: calc(var(--toolbarbutton-inner-padding) * 0.75) !important;
+    margin: calc(var(--toolbarbutton-inner-padding) * 0.25) !important;
+    transition: 
+        background-color 0.3s, 
+        padding 0.3s, 
+        margin 0.3s 
+        !important;
+}
+#nav-bar toolbarbutton:not([disabled]):hover > stack {
+    padding: var(--toolbarbutton-inner-padding) !important;
+    margin: 0px !important;
+}*/
+
 
 /* Rotate the Custom Menu expander by 90 degrees */
 #nav-bar-overflow-button .toolbarbutton-icon {
@@ -266,27 +274,38 @@ panelview {
 #urlbar-input-container - URL Bar
 */
 
+/* Icons in the Adress bar transition background-color */
+#urlbar-input-container box {
+    transition: background-color 0.3s !important;
+}
+
 /* Icons in the Adress bar only show when hovering */
 #page-action-buttons > hbox {
-    transition: 
+    transition:
         opacity 0.5s, 
         width 0.5s, 
         padding-left 0.5s, 
-        padding-right 0.5s 
+        padding-right 0.5s,
+        background-color 0.3s
         !important;
-}
-#urlbar-input-container:not(:hover) #page-action-buttons > hbox {
-    opacity: 0;
-    width: 0px !important;
-    padding-left: 0px !important;
-    padding-right: 0px !important;
 }
 #page-action-buttons > hbox > .urlbar-icon {
     transform: rotate(45deg);
     transition: transform 0.5s !important;
 }
-#urlbar-input-container:hover #page-action-buttons > hbox > .urlbar-icon {
+#nav-bar:not(:hover) #page-action-buttons > hbox {
+    opacity: 0;
+    width: 0px !important;
+    padding-left: 0px !important;
+    padding-right: 0px !important;
+}
+#nav-bar:hover #page-action-buttons > hbox > .urlbar-icon {
     transform: rotate(0);
+}
+
+/* Expanded URL Input */
+.searchbar-engine-one-off-item {
+    margin: 0px 1px !important;
 }
 
 
