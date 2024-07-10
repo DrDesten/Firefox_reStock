@@ -27,7 +27,8 @@
     --bezier-exp-out-soft: cubic-bezier(.1,.1,0,1);
     
     /* Colors */
-    --tab-bg: var(--tab-selected-bgcolor);
+    --tab-bg: light-dark(rgb(255, 255, 255), rgb(66, 65, 77));
+    --tab-bg-trans: light-dark(rgba(255, 255, 255, 0), rgb(66, 65, 77, 0));
 }
 
 
@@ -72,20 +73,24 @@
     margin: 3px 0px !important;
     padding: 0px !important;
     
-    background-color: var(--tab-bg) !important;
-    box-shadow: 0px 0px 4px light-dark(#888, #000) !important;
-    opacity: 0;
+    background-color: var(--tab-bg-trans) !important;
+    box-shadow: 0px 0px 4px -4px light-dark(#888, #000) !important;
 
-    transition: opacity 0.2s, box-shadow 0.2s, margin 0.2s !important;
+    transition: background-color 0.2s, box-shadow 0.2s, margin 0.2s !important;
 }
 
 /* Tab Background of selected and active */
 .tabbrowser-tab:hover .tab-background { 
-    opacity: 0.8;
+    background-color: var(--tab-bg) !important;
+    box-shadow: 0px 0px 4px -1px light-dark(#888, #000) !important;
 }
 .tabbrowser-tab[selected] .tab-background {
-    opacity: 1;
+    background-color: var(--tab-bg) !important;
+    box-shadow: 0px 0px 4px light-dark(#888, #000) !important;
 }
+
+/* Indicator line on tab */
+.tab-context-line {}
 
 /* Tab Close Button */
 .tabbrowser-tab .tab-close-button {
@@ -186,6 +191,10 @@
 }
 .panel-viewstack toolbarbutton[id*=update] image {
     display: none;
+}
+/* Remove Update Pop-Up */
+#appMenu-update-available-notification {
+    display: none !important;
 }
 
 /* Items in all menus */
