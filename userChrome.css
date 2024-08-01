@@ -22,13 +22,18 @@
     
     /* Interpolation Functions */
     --bezier-exp-in: cubic-bezier(1,0,1,0);
-    --bezier-exp-in-soft: cubic-bezier(1,0,.9,.9);
+    --bezier-exp-in-soft: cubic-bezier(1,0,.9,1);
     --bezier-exp-out: cubic-bezier(0,1,0,1);
-    --bezier-exp-out-soft: cubic-bezier(.1,.1,0,1);
+    --bezier-exp-out-soft: cubic-bezier(.1,0,0,1);
+    --bezier-exp-inout: cubic-bezier(1,0,0,1);
+    --bezier-exp-inout-soft: cubic-bezier(.9,0,.1,1);
     
     /* Colors */
     --tab-bg: light-dark(rgb(255, 255, 255), rgb(66, 65, 77));
     --tab-bg-trans: light-dark(rgba(255, 255, 255, 0), rgb(66, 65, 77, 0));
+    
+    /* Transitions */
+    --trans: 0.2s var(--bezier-exp-out-soft)
 }
 
 
@@ -39,9 +44,11 @@
 /* Allow for container queries */
 .tabbrowser-tab:not([pinned]):has(.tab-icon-stack > *[src]) {
     container: tab-favicon / inline-size;
+    overflow: visible !important;
 }
 .tabbrowser-tab:not([pinned]):not(:has(.tab-icon-stack > *[src])) {
     container: tab-text / inline-size;
+    overflow: visible !important;
 }
 
 /* Reduce Space right/left from tab stack */
@@ -53,19 +60,18 @@
 .tabbrowser-tab:not([pinned]) {
     min-width: var(--tab-mw) !important;
 }
-/* .tabbrowser-tab[pinned] {
-    width: var(--tab-pinned-w) !important;
-} */
-.tabbrowser-tab[selected]:not([pinned]) {
-    /* min-width: 48px !important; */
-}
 
 /* Reduce Tab Gap */
 .tabbrowser-tab:not([pinned]) {
     padding: 0px !important;
 }
-.tabbrowser-tab:not([pinned])[selected] {
+
+/* Ordering */
+.tabbrowser-tab:not([pinned]):hover {
     z-index: 1;
+}
+.tabbrowser-tab:not([pinned])[selected] {
+    z-index: 2;
 }
 
 /* Tab Background */
@@ -76,7 +82,7 @@
     background-color: var(--tab-bg-trans) !important;
     box-shadow: 0px 0px 4px -4px light-dark(#888, #000) !important;
 
-    transition: background-color 0.2s, box-shadow 0.2s, margin 0.2s !important;
+    transition: background-color var(--trans), box-shadow var(--trans), margin var(--trans) !important;
 }
 
 /* Tab Background of selected and active */
@@ -172,7 +178,109 @@
     
     /* Compensate the size change of the close button to keep the cross the same size */
     .tabbrowser-tab:hover .tab-close-button {
-        padding: calc(min(4.5px - (22px - 100%) / 2, 4.5px)) !important;
+        padding: 4.5px calc(min(4.5px - (22px - 100%) / 2, 4.5px)) !important;
+    }
+}
+
+/* Lookup Table */
+@container tab-favicon (max-width: 18px) {
+    .tabbrowser-tab:not(:hover) .tab-icon-stack { transform: rotate3d(0, 1, 0, 0deg); }
+    .tabbrowser-tab[selected] ~ .tabbrowser-tab:not(:hover) .tab-icon-stack { transform: rotate3d(0, 1, 0, -0deg); }
+}
+@container tab-favicon (max-width: 17px) {
+    /*.tabbrowser-tab:not(:hover) .tab-icon-stack { transform: rotate3d(0, 1, 0, 20deg); }
+    .tabbrowser-tab[selected] ~ .tabbrowser-tab:not(:hover) .tab-icon-stack { transform: rotate3d(0, 1, 0, -20deg); }*/
+    .tabbrowser-tab:not(:hover) .tab-icon-stack { transform: rotate3d(0, 1, 0, 0deg); }
+    .tabbrowser-tab[selected] ~ .tabbrowser-tab:not(:hover) .tab-icon-stack { transform: rotate3d(0, 1, 0, -0deg); }
+}
+@container tab-favicon (max-width: 16px) {
+    .tabbrowser-tab:not(:hover) .tab-icon-stack { transform: rotate3d(0, 1, 0, 29deg); }
+    .tabbrowser-tab[selected] ~ .tabbrowser-tab:not(:hover) .tab-icon-stack { transform: rotate3d(0, 1, 0, -29deg); }
+}
+@container tab-favicon (max-width: 15px) {
+    .tabbrowser-tab:not(:hover) .tab-icon-stack { transform: rotate3d(0, 1, 0, 36deg); }
+    .tabbrowser-tab[selected] ~ .tabbrowser-tab:not(:hover) .tab-icon-stack { transform: rotate3d(0, 1, 0, -36deg); }
+}
+@container tab-favicon (max-width: 14px) {
+    .tabbrowser-tab:not(:hover) .tab-icon-stack { transform: rotate3d(0, 1, 0, 41deg); }
+    .tabbrowser-tab[selected] ~ .tabbrowser-tab:not(:hover) .tab-icon-stack { transform: rotate3d(0, 1, 0, -41deg); }
+}
+@container tab-favicon (max-width: 13px) {
+    .tabbrowser-tab:not(:hover) .tab-icon-stack { transform: rotate3d(0, 1, 0, 47deg); }
+    .tabbrowser-tab[selected] ~ .tabbrowser-tab:not(:hover) .tab-icon-stack { transform: rotate3d(0, 1, 0, -47deg); }
+}
+@container tab-favicon (max-width: 12px) {
+    .tabbrowser-tab:not(:hover) .tab-icon-stack { transform: rotate3d(0, 1, 0, 51deg); }
+    .tabbrowser-tab[selected] ~ .tabbrowser-tab:not(:hover) .tab-icon-stack { transform: rotate3d(0, 1, 0, -51deg); }
+}
+@container tab-favicon (max-width: 11px) {
+    .tabbrowser-tab:not(:hover) .tab-icon-stack { transform: rotate3d(0, 1, 0, 56deg); }
+    .tabbrowser-tab[selected] ~ .tabbrowser-tab:not(:hover) .tab-icon-stack { transform: rotate3d(0, 1, 0, -56deg); }
+}
+@container tab-favicon (max-width: 10px) {
+    .tabbrowser-tab:not(:hover) .tab-icon-stack { transform: rotate3d(0, 1, 0, 60deg); }
+    .tabbrowser-tab[selected] ~ .tabbrowser-tab:not(:hover) .tab-icon-stack { transform: rotate3d(0, 1, 0, -60deg); }
+}
+@container tab-favicon (max-width: 9px) {
+    .tabbrowser-tab:not(:hover) .tab-icon-stack { transform: rotate3d(0, 1, 0, 64deg); }
+    .tabbrowser-tab[selected] ~ .tabbrowser-tab:not(:hover) .tab-icon-stack { transform: rotate3d(0, 1, 0, -64deg); }
+}
+@container tab-favicon (max-width: 8px) {
+    .tabbrowser-tab:not(:hover) .tab-icon-stack { transform: rotate3d(0, 1, 0, 68deg); }
+    .tabbrowser-tab[selected] ~ .tabbrowser-tab:not(:hover) .tab-icon-stack { transform: rotate3d(0, 1, 0, -68deg); }
+}
+@container tab-favicon (max-width: 7px) {
+    .tabbrowser-tab:not(:hover) .tab-icon-stack { transform: rotate3d(0, 1, 0, 72deg); }
+    .tabbrowser-tab[selected] ~ .tabbrowser-tab:not(:hover) .tab-icon-stack { transform: rotate3d(0, 1, 0, -72deg); }
+}
+@container tab-favicon (max-width: 6px) {
+    .tabbrowser-tab:not(:hover) .tab-icon-stack { transform: rotate3d(0, 1, 0, 76deg); }
+    .tabbrowser-tab[selected] ~ .tabbrowser-tab:not(:hover) .tab-icon-stack { transform: rotate3d(0, 1, 0, -76deg); }
+}
+@container tab-favicon (max-width: 5px) {
+    .tabbrowser-tab:not(:hover) .tab-icon-stack { transform: rotate3d(0, 1, 0, 79deg); }
+    .tabbrowser-tab[selected] ~ .tabbrowser-tab:not(:hover) .tab-icon-stack { transform: rotate3d(0, 1, 0, -79deg); }
+}
+@container tab-favicon (max-width: 4px) {
+    .tabbrowser-tab:not(:hover) .tab-icon-stack { transform: rotate3d(0, 1, 0, 83deg); }
+    .tabbrowser-tab[selected] ~ .tabbrowser-tab:not(:hover) .tab-icon-stack { transform: rotate3d(0, 1, 0, -83deg); }
+}
+@container tab-favicon (max-width: 3px) {
+    .tabbrowser-tab:not(:hover) .tab-icon-stack { transform: rotate3d(0, 1, 0, 86deg); }
+    .tabbrowser-tab[selected] ~ .tabbrowser-tab:not(:hover) .tab-icon-stack { transform: rotate3d(0, 1, 0, -86deg); }
+}
+@container tab-favicon (max-width: 2px) {
+    .tabbrowser-tab:not(:hover) .tab-icon-stack { transform: rotate3d(0, 1, 0, 90deg); }
+    .tabbrowser-tab[selected] ~ .tabbrowser-tab:not(:hover) .tab-icon-stack { transform: rotate3d(0, 1, 0, -90deg); }
+}
+
+/* Make Background bigger */
+@container (max-width: 18px) {
+    .tabbrowser-tab .tab-stack {
+        margin: 0px calc((100% - 16px) / 2 - 1px) !important;
+        transition: margin 0.1s;
+    }
+    /* Prevent clipping of first tab - not a problem if pinned tabs exist */
+    .tabbrowser-tab:first-of-type:hover .tab-stack,
+    .tabbrowser-tab:first-of-type[selected] .tab-stack {
+        margin: 0px !important;
+        margin-right: calc((100% - 16px) - 2px) !important;
+    }
+}
+
+/* Tabs too small to fit favicon */
+@container tab-favicon (max-width: 18px) {
+    /* Allow for 3d effects */
+    .tab-content {
+        perspective: 128px;
+    }   
+    
+    .tabbrowser-tab .tab-icon-stack {
+        transition: transform var(--trans);
+    }
+    .tabbrowser-tab:hover .tab-icon-stack,
+    .tabbrowser-tab[selected] .tab-icon-stack {
+        transform: rotate3d(0, 1, 0, 0deg);
     }
 }
 
