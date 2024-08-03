@@ -26,3 +26,10 @@ reStock adds smooth transitions to many elements of the browser interface, inclu
 10. Restart Firefox.
 
 For more information about userChrome customisation and a more detailed guide you can visit [userchrome.org](https://www.userchrome.org/how-create-userchrome-css.html).
+
+
+## Troubleshooting
+#### Compatibility
+Support for css container size queries and the css `:has` selector is required.  
+Firefox supports container queries since version **110**.  
+Firefox supports `:has` since version **121**. For versions **103** to **120** it has to be enabled using the config option `layout.css.has-selector.enabled`.  
