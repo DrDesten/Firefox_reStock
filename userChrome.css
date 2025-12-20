@@ -44,11 +44,11 @@
 /* Allow for container queries */
 .tabbrowser-tab:not([pinned]):has(.tab-icon-stack > *[src]) {
     container: tab-favicon / inline-size;
-    overflow: visible !important;
+    /*overflow: visible !important;*/
 }
 .tabbrowser-tab:not([pinned]):not(:has(.tab-icon-stack > *[src])) {
     container: tab-text / inline-size;
-    overflow: visible !important;
+    /*overflow: visible !important;*/
 }
 
 /* Reduce Space right/left from tab stack */
@@ -57,13 +57,19 @@
 }
 
 /* Reduce Minimum Tab Width */
-.tabbrowser-tab:not([pinned]) {
+arrowscrollbox > .tabbrowser-tab:not([pinned]),
+tab-group:not([collapsed]) > .tabbrowser-tab {
     min-width: var(--tab-mw) !important;
 }
 
 /* Reduce Tab Gap */
 .tabbrowser-tab:not([pinned]) {
     padding: 0px !important;
+}
+
+/* Tab Group Labels */
+tab-group:not([collapsed]) .tab-group-label {
+    min-width: calc(var(--tab-group-label-height) / 2) !important;
 }
 
 /* Ordering */
@@ -75,7 +81,7 @@
 }
 
 /* Tab Background */
-.tabbrowser-tab .tab-background {
+/*.tabbrowser-tab .tab-background {
     margin: 3px 0px !important;
     padding: 0px !important;
     
@@ -86,14 +92,28 @@
 }
 
 /* Tab Background of selected and active */
-.tabbrowser-tab:hover .tab-background { 
+/*.tabbrowser-tab:hover .tab-background { 
     background-color: var(--tab-bg) !important;
     box-shadow: 0px 0px 4px -1px light-dark(#888, #000) !important;
 }
 .tabbrowser-tab[selected] .tab-background {
     background-color: var(--tab-bg) !important;
     box-shadow: 0px 0px 4px light-dark(#888, #000) !important;
-}
+}*/
+
+/*.tabbrowser-tab .tab-background {
+    background: linear-gradient(97deg in oklch longer hue, #d0f8, #d0f8);
+}*/
+
+/*.tabbrowser-tab .tab-background {
+    border-radius: 10px;
+    border: 2px solid transparent;
+    border-image: repeating-conic-gradient(
+        in oklch longer hue, 
+        #d0f, 
+        #d0f
+    ) 1;
+}*/
 
 /* Indicator line on tab */
 .tab-context-line {}
@@ -159,6 +179,38 @@
 
 /* Tabs too small to fit more than one icon */
 @container (max-width: 50px) {
+    /* Center Align Icons */
+    .tabbrowser-tab .tab-content {
+        justify-content: center;
+    }
+    
+    /* Audio Button is enabled */
+    .tabbrowser-tab:is([soundplaying], [muted], [activemedia-blocked]) {
+        .tab-close-button,
+        .tab-label-container {
+            display: none;
+        }
+        
+        /* show small audio icon when not hovering */
+        .tab-audio-button {
+            transition: transform 0.2s var(--bezier-exp-out-soft);
+        }
+        &:hover .tab-icon-stack {
+            display: none;
+        }
+        &:not(:hover) .tab-audio-button {
+            position: absolute;
+            transform: scale(0.75) translate(25%, -25%);
+        }
+        &:not(:hover) .tab-audio-button::before {
+            content: '';
+            position: absolute;
+            top: 10%; bottom: 10%; left: 10%; right: 10%;
+            border-radius: 50%;
+            background-color: var(--tab-selected-bgcolor);
+        }
+    }
+    
     /* Close Button is visible */
     .tabbrowser-tab[selected]:hover .tab-icon-stack,
     .tabbrowser-tab[selected]:hover .tab-label-container {
@@ -167,7 +219,7 @@
     .tabbrowser-tab[selected]:hover .tab-content {
         padding: 0px !important;
     }
-    
+
     /* Close button is not visible */
     .tabbrowser-tab:not([selected]) .tab-close-button {
         display: none;   
@@ -175,7 +227,7 @@
     .tabbrowser-tab .tab-close-button {
         transition: none;   
     }
-    
+
     /* Compensate the size change of the close button to keep the cross the same size */
     .tabbrowser-tab:hover .tab-close-button {
         padding: 4.5px calc(min(4.5px - (22px - 100%) / 2, 4.5px)) !important;
